@@ -3,7 +3,7 @@
   "summary": {
     "title": "FH Portal",
     "owner": "",
-    "description": "",
+    "description": "Threat Model für das Praxisprojekt-Portal der FH Aachen mit SSO, Rollen, Uploads und PDF-Export",
     "id": 0
   },
   "detail": {
@@ -11,38 +11,190 @@
     "diagrams": [
       {
         "id": 0,
-        "title": "New STRIDE diagram",
-        "diagramType": "STRIDE",
-        "placeholder": "New STRIDE diagram description",
-        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "title": "FH Aachen DFD",
+        "diagramType": "DFD",
+        "placeholder": "Data Flow Diagram für das Praxisprojekt-Portal",
+        "thumbnail": "./public/content/images/thumbnail.dfd.jpg",
         "version": "2.5.0",
-        "cells": [{
-  "version": "2.5.0",
-  "summary": {
-    "title": "FH Portal",
-    "owner": "",
-    "description": "",
-    "id": 0
-  },
-  "detail": {
-    "contributors": [],
-    "diagrams": [
-      {
-        "id": 0,
-        "title": "New STRIDE diagram",
-        "diagramType": "STRIDE",
-        "placeholder": "New STRIDE diagram description",
-        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
-        "version": "2.5.0",
-        "cells": []
-      }
-    ],
-    "diagramTop": 1,
-    "reviewer": "",
-    "threatTop": 0
-  }
-}
-]
+        "cells": [
+          {
+            "type": "tm.Boundary",
+            "size": { "width": 800, "height": 600 },
+            "position": { "x": 100, "y": 100 },
+            "z": 0,
+            "attrs": { "label": { "text": "Internet" } },
+            "id": "boundary-internet"
+          },
+          {
+            "type": "tm.Boundary",
+            "size": { "width": 800, "height": 600 },
+            "position": { "x": 950, "y": 100 },
+            "z": 0,
+            "attrs": { "label": { "text": "Portal Backend" } },
+            "id": "boundary-backend"
+          },
+          {
+            "type": "tm.Boundary",
+            "size": { "width": 800, "height": 600 },
+            "position": { "x": 1800, "y": 100 },
+            "z": 0,
+            "attrs": { "label": { "text": "Internal Services" } },
+            "id": "boundary-internal"
+          },
+          {
+            "type": "tm.Actor",
+            "position": { "x": 150, "y": 150 },
+            "size": { "width": 100, "height": 60 },
+            "z": 1,
+            "attrs": { "label": { "text": "Studierende" } },
+            "id": "actor-student",
+            "parent": "boundary-internet"
+          },
+          {
+            "type": "tm.Actor",
+            "position": { "x": 150, "y": 250 },
+            "size": { "width": 100, "height": 60 },
+            "z": 1,
+            "attrs": { "label": { "text": "Bearbeiter" } },
+            "id": "actor-editor",
+            "parent": "boundary-internet"
+          },
+          {
+            "type": "tm.Actor",
+            "position": { "x": 150, "y": 350 },
+            "size": { "width": 100, "height": 60 },
+            "z": 1,
+            "attrs": { "label": { "text": "Externe Unternehmen" } },
+            "id": "actor-company",
+            "parent": "boundary-internet"
+          },
+          {
+            "type": "tm.Store",
+            "position": { "x": 300, "y": 150 },
+            "size": { "width": 140, "height": 70 },
+            "z": 1,
+            "attrs": { "label": { "text": "SSO Provider (FH)" } },
+            "id": "sso-provider",
+            "parent": "boundary-internet"
+          },
+          {
+            "type": "tm.Process",
+            "position": { "x": 1000, "y": 150 },
+            "size": { "width": 140, "height": 70 },
+            "z": 1,
+            "attrs": { "label": { "text": "Auth Service" } },
+            "id": "auth-service",
+            "parent": "boundary-backend"
+          },
+          {
+            "type": "tm.Process",
+            "position": { "x": 1000, "y": 250 },
+            "size": { "width": 140, "height": 70 },
+            "z": 1,
+            "attrs": { "label": { "text": "API Backend" } },
+            "id": "api-backend",
+            "parent": "boundary-backend"
+          },
+          {
+            "type": "tm.Process",
+            "position": { "x": 1000, "y": 350 },
+            "size": { "width": 140, "height": 70 },
+            "z": 1,
+            "attrs": { "label": { "text": "PDF Worker" } },
+            "id": "pdf-worker",
+            "parent": "boundary-backend"
+          },
+          {
+            "type": "tm.Store",
+            "position": { "x": 1150, "y": 450 },
+            "size": { "width": 140, "height": 70 },
+            "z": 1,
+            "attrs": { "label": { "text": "SMTP Server" } },
+            "id": "smtp-server",
+            "parent": "boundary-backend"
+          },
+          {
+            "type": "tm.Store",
+            "position": { "x": 1850, "y": 150 },
+            "size": { "width": 140, "height": 70 },
+            "z": 1,
+            "attrs": { "label": { "text": "Projekt DB" } },
+            "id": "projekt-db",
+            "parent": "boundary-internal"
+          },
+          {
+            "type": "tm.Store",
+            "position": { "x": 1850, "y": 250 },
+            "size": { "width": 140, "height": 70 },
+            "z": 1,
+            "attrs": { "label": { "text": "Datei Speicher" } },
+            "id": "file-store",
+            "parent": "boundary-internal"
+          },
+          {
+            "type": "tm.Flow",
+            "source": { "id": "actor-student" },
+            "target": { "id": "sso-provider" },
+            "z": 10,
+            "attrs": { "label": { "text": "SSO Login Request" } }
+          },
+          {
+            "type": "tm.Flow",
+            "source": { "id": "sso-provider" },
+            "target": { "id": "auth-service" },
+            "z": 10,
+            "attrs": { "label": { "text": "Token Response" } }
+          },
+          {
+            "type": "tm.Flow",
+            "source": { "id": "actor-company" },
+            "target": { "id": "auth-service" },
+            "z": 10,
+            "attrs": { "label": { "text": "Login mit Passwort" } }
+          },
+          {
+            "type": "tm.Flow",
+            "source": { "id": "auth-service" },
+            "target": { "id": "api-backend" },
+            "z": 10,
+            "attrs": { "label": { "text": "Session Context" } }
+          },
+          {
+            "type": "tm.Flow",
+            "source": { "id": "api-backend" },
+            "target": { "id": "projekt-db" },
+            "z": 10,
+            "attrs": { "label": { "text": "Projektzugriff" } }
+          },
+          {
+            "type": "tm.Flow",
+            "source": { "id": "api-backend" },
+            "target": { "id": "file-store" },
+            "z": 10,
+            "attrs": { "label": { "text": "Upload/Download" } }
+          },
+          {
+            "type": "tm.Flow",
+            "source": { "id": "api-backend" },
+            "target": { "id": "smtp-server" },
+            "z": 10,
+            "attrs": { "label": { "text": "E-Mail Benachrichtigung" } }
+          },
+          {
+            "type": "tm.Flow",
+            "source": { "id": "api-backend" },
+            "target": { "id": "pdf-worker" },
+            "z": 10,
+            "attrs": { "label": { "text": "PDF Job" } }
+          },
+          {
+            "type": "tm.Flow",
+            "source": { "id": "pdf-worker" },
+            "target": { "id": "file-store" },
+            "z": 10,
+            "attrs": { "label": { "text": "PDF speichern" } }
+          }
+        ]
       }
     ],
     "diagramTop": 1,
